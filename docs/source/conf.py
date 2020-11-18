@@ -17,12 +17,12 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'MAGE SDK'
+project = 'MAGEPY'
 copyright = '2020, Stage 2 Security'
 author = 'Stage 2 Security'
 
 # The full version, including alpha/beta/rc tags
-release = '1.0'
+release = '0.2.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -82,7 +82,7 @@ html_theme_options = {
 # regardless of the global 'pdf_compressed' setting.
 
 pdf_documents = [
- ('index', 'mage_sdk', 'MAGE SDK', 'Stage 2 Security'),
+ ('index', 'magepy', 'magepy', 'Stage 2 Security'),
 ]
 
 # A comma-separated list of custom stylesheets. Example:

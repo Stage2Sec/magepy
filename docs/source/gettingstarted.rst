@@ -9,10 +9,10 @@ Requirements
 
     .. literalinclude:: ../../requirements.txt
 
-Installing MAGE
----------------
+Installing Magepy
+-----------------
 
-MAGE can be installed with a simple ``pip install magepy``.  Here is an example of installing it in an Ubuntu 16 docker container:
+Mage can be installed with a simple ``pip install magepy``.  Here is an example of installing it in an Ubuntu 16 docker container:
 
 .. code-block:: bash
 
@@ -24,11 +24,11 @@ MAGE can be installed with a simple ``pip install magepy``.  Here is an example 
 Configuring the environment
 ---------------------------
 
-The SDK requires the following information to connect to the MAGE server.  Contact your Stage 2 representative for the correct values:
+Magepy requires the following information to connect to the `Mage monitoring service <https://mage.stage2sec.io/>`_.  Contact magepy@stage2sec.com for the correct values:
 
 * COGNITO_USERNAME=Cognito username
 * COGNITO_PASSWORD=Cognito Password
-* GQL_URL=MAGE endpoint URL
+* GQL_URL=Mage endpoint URL
 * POOL_ID=AWS pool ID
 * CLIENT_ID==AWS client ID
 
@@ -38,13 +38,13 @@ The following places are checked for this connection information:
 
 * ~/.env
 * ./.env
-* filename passed into :meth:`mage.connect`
+* filename passed into `mage.connect`
 
 
-Connecting to MAGE
+Connecting to Mage
 ------------------
 
-Connecting to MAGE is as simple as calling `mage.connect`::
+Connecting to Mage is as simple as calling `mage.connect`::
 
     import mage
     mage.connect()
@@ -54,7 +54,7 @@ Connecting to MAGE is as simple as calling `mage.connect`::
 Creating an assessment
 ----------------------
 
-In order for MAGE to scan your assets, you'll need to define what you want assessed.  This is known as an assessment.  Assessments are created by calling :meth:`mage.Assessment.create() <mage.api_resources.assessment.Assessment.create>`::
+In order for Mage to scan your assets, you'll need to define what you want assessed.  This is known as an assessment.  Assessments are created by calling :meth:`mage.Assessment.create() <mage.api_resources.assessment.Assessment.create>`::
 
     assessment = mage.Assessment.create('EXTERNAL', name='Public Webservers')
 
