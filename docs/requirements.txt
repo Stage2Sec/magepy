@@ -2,3 +2,6 @@ sphinx==2.4.4
 sphinx_rtd_theme
 rst2pdf
 svglib
+python-dotenv>=0.15.0
+sgqlc>=11.0
+warrant>=0.6.1
