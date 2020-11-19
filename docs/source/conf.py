@@ -22,7 +22,7 @@ copyright = '2020, Stage 2 Security'
 author = 'Stage 2 Security'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
+release = '0.2.1'
 
 
 # -- General configuration ---------------------------------------------------
