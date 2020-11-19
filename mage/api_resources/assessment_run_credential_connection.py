@@ -3,12 +3,13 @@ from .. import schema
 
 class AssessmentRunCredentialConnection( MutableAPIResource ):
     """
+    Connection between an assessment run and a credential.
+
     Attributes:
         id (str): Unique connection ID
         created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
         updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
         asset_id (str): ID of the associated asset
-        assessment_id (str): ID of the associated assessment
         credential_id (str): ID of the associated credential
         link_type (mage.schema.CredentialLinkType):
     """
@@ -18,16 +19,58 @@ class AssessmentRunCredentialConnection( MutableAPIResource ):
 
     __field_names__ = schema.AssessmentRunCredentialConnection.__field_names__
 
+
     @property
     def assessment(self):
         """
-        The associated assessment.
+        Warning:
+            Not Implemented.  Use assessment_run instead.
+
+        Todo:
+            Rename assessment to assessment_run in the schema and remove this method.
+        """
+        raise NotImplementedError("Call 'assessment_run' instead of 'assessment'")
+
+
+    @property
+    def assessment_id(self):
+        """
+        Warning:
+            Not Implemented.  Use assessment_run_id instead.
+
+        Todo:
+            Rename assessment_id to assessment_run_id in the schema and remove this method.
+        """
+        raise NotImplementedError("Use 'assessment_run_id' instead of 'assessment_id'")
+
+
+    @property
+    def assessment_run(self):
+        """
+        The associated assessment run.
 
         Returns:
-            `Assessment <assessment.Assessment>`
+            `AssessmentRun <assessment_run.AssessmentRun>`
+
+        Todo:
+            Rename assessment to assessment_run in the schema then update this method by renaming assessment to assessment_run.
         """
-        from .assessment import Assessment
-        return self._nested_resource(Assessment, 'assessment')
+        from .assessment_run import AssessmentRun
+        return self._nested_resource(AssessmentRun, 'assessment')
+
+
+    @property
+    def assessment_run_id(self):
+        """
+        ID of the associated assessment run.
+
+        Returns:
+            str
+
+        Todo:
+            Rename assessment_id to assessment_run_id in the schema and remove this method.
+        """
+        return self.assessment_id
 
 
     @property
@@ -48,8 +91,8 @@ class AssessmentRunCredentialConnection( MutableAPIResource ):
         Connects a credential to an assessment run.
 
         Args:
-            assessment_id (str): ID of the assessment
-            group_id (str): ID of the asset group
+            assessment_run_id (str): ID of the assessment run
+            credential_id (str): ID of the credential
 
         Returns:
             `AssessmentRunAssetConnection <assessment_run_asset_connection.AssessmentRunAssetConnection>`
@@ -59,7 +102,7 @@ class AssessmentRunCredentialConnection( MutableAPIResource ):
             >>> mage.connect()
             >>> mage.AssessmentRunAssetConnection.create('11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222')
         """
-        retval = cls.mutate('create_assessment_run_credential_connection', input={'credential_id': asset_id, 'assessment_run_id': assessment_run_id})
+        retval = cls.mutate('create_assessment_run_credential_connection', input={'credential_id': credential_id, 'assessment_run_id': assessment_run_id})
         if retval:
             retval = cls.init(retval)
         return retval

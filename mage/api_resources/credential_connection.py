@@ -3,12 +3,14 @@ from .. import schema
 
 class CredentialConnection( MutableAPIResource ):
     """
+    Connection between an asset and a credential.
+
     Attributes:
-        id (str): Unique connection ID
-        created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
         asset_id (str): ID of the associated asset
+        created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
         credential_id (str): ID of the associated credential
+        id (str): Unique connection ID
+        updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
     _UPDATE_FN = 'update_credential_connection'
     _DELETE_FN = 'delete_credential_connection'

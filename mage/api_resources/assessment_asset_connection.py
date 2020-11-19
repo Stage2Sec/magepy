@@ -3,12 +3,14 @@ from .. import schema
 
 class AssessmentAssetConnection( MutableAPIResource ):
     """
+    Connection between an assessment and asset.
+
     Attributes:
+        assessment_id (str): ID of the associated assessment
+        asset_id (str): ID of the associated asset
         id (str): Unique connection ID
         created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
         updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
-        asset_id (str): ID of the associated asset
-        assessment_id (str): ID of the associated assessment
     """
     _UPDATE_FN = 'update_assessment_asset_connection'
     _DELETE_FN = 'delete_assessment_asset_connection'

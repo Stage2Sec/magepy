@@ -4,17 +4,17 @@ from .. import schema
 class Lead( ListableAPIResource, MutableAPIResource ):
     """
     Attributes:
-        id (str): Unique lead ID
         assessment_run_id (str): ID of the associated assessment run
+        confidence (mage.schema.Confidence): Confidence level of the lead
         created_at (str): When the lead was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the lead was last updated (e.g., '2020-01-02T03:04:56.789Z')
-        title (str): Title of the lead
         description (str): Description of the lead
         evidence (mage.schema.AWSJSON): Evidence supporting the lead
-        references (list of str): List of references to additional information
-        confidence (mage.schema.Confidence): Confidence level of the lead
-        files (list of mage.schema.S3Object): Associated files
         file_links (list of str): Associated files
+        files (list of mage.schema.S3Object): Associated files
+        id (str): Unique lead ID
+        references (list of str): List of references to additional information
+        title (str): Title of the lead
+        updated_at (str): When the lead was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
 
     _SEARCH_FN = 'search_leads'
@@ -27,12 +27,26 @@ class Lead( ListableAPIResource, MutableAPIResource ):
     @property
     def assessment(self):
         """
-        Associated assessment run.
+        Warning:
+            Not Implemented.  Use assessment_run instead.
+
+        Todo:
+            Rename assessment to assessment_run in the schema and remove this method.
+        """
+        raise NotImplementedError("Call 'assessment_run' instead of 'assessment'")
+
+
+    @property
+    def assessment_run(self):
+        """
+        The associated assessment run.
 
         Returns:
             `AssessmentRun <assessment_run.AssessmentRun>`
-        """
 
+        Todo:
+            Rename assessment to assessment_run in the schema then update this method by renaming assessment to assessment_run.
+        """
         from .assessment_run import AssessmentRun
         return self._nested_resource(AssessmentRun, 'assessment')
 

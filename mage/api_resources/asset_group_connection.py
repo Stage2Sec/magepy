@@ -3,12 +3,14 @@ from .. import schema
 
 class AssetGroupConnection( MutableAPIResource ):
     """
+    A connection indicating an asset belongs to an asset group.
+
     Attributes:
-        id (str): Unique connection ID
-        created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
         asset_id (str): ID of the associated asset
+        created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
         group_id (str): ID of the associated group
+        id (str): Unique connection ID
+        updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
     _UPDATE_FN = 'update_asset_group_connection'
     _DELETE_FN = 'delete_asset_group_connection'

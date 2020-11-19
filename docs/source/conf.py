@@ -42,6 +42,9 @@ exclude_patterns = []
 
 default_role = 'any'
 
+todo_include_todos = False
+todo_emit_warnings = False
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

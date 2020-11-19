@@ -4,14 +4,14 @@ from .. import schema
 class Credential( ListableAPIResource, MutableAPIResource ):
     """
     Attributes:
-        id (str): Unique credential ID
         created_at (str): When the credential was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the credential was last updated (e.g., '2020-01-02T03:04:56.789Z')
-        name (str):
-        username (str):
-        password (str):
-        hashes (list of :class:`mage.schema.HashPair`):
         domain (str):
+        hashes (list of :class:`mage.schema.HashPair`):
+        id (str): Unique credential ID
+        name (str):
+        password (str):
+        updated_at (str): When the credential was last updated (e.g., '2020-01-02T03:04:56.789Z')
+        username (str):
     """
 
     _GET_FN    = 'get_credential'

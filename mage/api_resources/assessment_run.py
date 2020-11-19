@@ -4,6 +4,8 @@ from .. import schema
 
 class AssessmentRun(ListableAPIResource, MutableAPIResource, FilterableAPIResource):
     """
+    The execution of an assessment at a specific point in time.
+
     Attributes:
         asm_graph (mage.schema.AWSJSON): A signed URL to the D3 network graph for ATTACK_SURFACE_MONITORING assessments
         assessment_id (str): ID of the associated assessment

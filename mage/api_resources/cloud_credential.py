@@ -3,14 +3,16 @@ from .. import schema
 
 class CloudCredential( ListableAPIResource, MutableAPIResource ):
     """
+    A credential for Mage to access a cloud instance.
+
     Attributes:
-        id (str): Unique cloud credential ID (e.g., '11111111-1111-1111-1111-111111111111')
-        created_at (str): When the cloud credential was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the cloud credential was last updated (e.g., '2020-01-02T03:04:56.789Z')
-        assessment_id (str): ID of the associated assessment
-        name (str):
         access_key (str):
+        assessment_id (str): ID of the associated assessment
         cloud_platform (mage.schema.CloudPlatform):
+        created_at (str): When the cloud credential was created (e.g., '2020-01-02T03:04:56.789Z')
+        id (str): Unique cloud credential ID (e.g., '11111111-1111-1111-1111-111111111111')
+        name (str):
+        updated_at (str): When the cloud credential was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
 
     _GET_FN    = 'get_cloud_credential'

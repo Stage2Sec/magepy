@@ -4,20 +4,19 @@ from .. import schema
 class Finding( ListableAPIResource, MutableAPIResource ):
     """
     Attributes:
-        id (str): Unique finding ID
-        created_at (str): When the finding was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the finding was last updated (e.g., '2020-01-02T03:04:56.789Z')
-        assessment_id (str): ID of the associated assessment run
         affected_asset_id (str): ID of the associated asset
-        severity (mage.schema.Severity): How severe the finding is
-        title (str): The title of the finding
+        created_at (str): When the finding was created (e.g., '2020-01-02T03:04:56.789Z')
         description (str): A description of the finding
         evidence (mage.schema.AWSJSON): Evidence supporting the finding
+        file_links (list of str):
+        files (list of :class:`mage.schema.S3Object`):
+        id (str): Unique finding ID
         references (list of str): List of references for additional information
         recommendations (list of str): List of recommendations
         risk (float): Risk associated with this finding
-        files (list of :class:`mage.schema.S3Object`):
-        file_links (list of str):
+        severity (mage.schema.Severity): How severe the finding is
+        title (str): The title of the finding
+        updated_at (str): When the finding was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
 
     _SEARCH_FN = 'search_findings'
@@ -29,21 +28,55 @@ class Finding( ListableAPIResource, MutableAPIResource ):
 
     @property
     def assessment(self):
-        """Not implemented.  Call `assessment_run <finding.Finding.assessment_run>` instead."""
+        """
+        Warning:
+            Not Implemented.  Use assessment_run instead.
+
+        Todo:
+            Rename assessment to assessment_run in the schema and remove this method.
+        """
         raise NotImplementedError("Call 'assessment_run' instead of 'assessment'")
+
+
+    @property
+    def assessment_id(self):
+        """
+        Warning:
+            Not Implemented.  Use assessment_run_id instead.
+
+        Todo:
+            Rename assessment_id to assessment_run_id in the schema and remove this method.
+        """
+        raise NotImplementedError("Use 'assessment_run_id' instead of 'assessment_id'")
 
 
     @property
     def assessment_run(self):
         """
-        Associated assessment run.
+        The associated assessment run.
 
         Returns:
             `AssessmentRun <assessment_run.AssessmentRun>`
-        """
 
+        Todo:
+            Rename assessment to assessment_run in the schema then update this method by renaming assessment to assessment_run.
+        """
         from .assessment_run import AssessmentRun
         return self._nested_resource(AssessmentRun, 'assessment')
+
+
+    @property
+    def assessment_run_id(self):
+        """
+        ID of the associated assessment run.
+
+        Returns:
+            str
+
+        Todo:
+            Rename assessment_id to assessment_run_id in the schema and remove this method.
+        """
+        return self.assessment_id
 
 
     @property
