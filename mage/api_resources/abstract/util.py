@@ -43,9 +43,13 @@ def update_subfields(field, key, value, query):
     """
     soft_exclude=['asm_graph', 'recon']
     hard_exclude = ['client', 'arn', 'execution_arn', 'write_key', 'secret_key', 'session_token', 'additional_data', 'stripe_subscription_id', 'stripe_latest_invoice_status', 'stripe_customer_id', 'stripe_customer', 'stripe_subscription_status']
+
+    from ...schema import schema
+    all_fields = [schema.Schedule]
+
+
     params = value.copy()
     select = params.pop('select',{})
-
     # e.g., a = op.search_assessments(limit=1)
     a = getattr(field, key)(**params)
 
@@ -68,15 +72,13 @@ def update_subfields(field, key, value, query):
                 v = select[k]
                 if k not in hard_exclude:
                     if v is None:
-                        #getattr(a, k)()
                         update_subfields(a, k, {}, q)
                     else:
                         update_subfields(a, k, v._params, q)
         else:
             for f in q.__field_names__:
                 if f not in hard_exclude + soft_exclude:
-                    if not hasattr(getattr(q, f).type, '__field_names__'):
+                    # if the field does not have subfields or if we want all fields by default
+                    if not hasattr(getattr(q, f).type, '__field_names__') or q in all_fields:
                         getattr(a, f)()
     return a
-
-

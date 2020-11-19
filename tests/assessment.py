@@ -62,7 +62,18 @@ class TestAssessment(unittest.TestCase):
 
     def test_list_runs(self):
         self.a.runs
-        pass
+
+    def test_create_schedule(self):
+        self.assertTrue(self.a.create_schedule('DAILY', {'hour':'23', 'minute':'55'}))
+        self.assertTrue(self.a.schedule)
+        self.assertEqual(self.a.schedule.frequency, 'DAILY')
+        self.assertEqual(self.a.schedule.time_expression.hour, '23')
+        self.assertEqual(self.a.schedule.time_expression.minute, '55')
+
+    def test_delete_schedule(self):
+        self.test_create_schedule()
+        self.assertTrue(self.a.delete_schedule())
+        self.assertFalse(self.a.schedule)
 
 if __name__ == '__main__':
     unittest.main()

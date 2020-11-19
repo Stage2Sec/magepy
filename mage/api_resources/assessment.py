@@ -173,7 +173,12 @@ class Assessment(ListableAPIResource, MutableAPIResource):
                 assessment_id = self.id
 
         result =  cls_or_self.mutate('schedule_assessment', input={'assessment_id': assessment_id, 'time_expression': time_expression, 'frequency': frequency})
-        return result == 'true'
+        result = (result == 'true')
+
+        if result:
+            self.refresh('schedule')
+
+        return result
 
 
     @class_or_instance_method
@@ -208,8 +213,12 @@ class Assessment(ListableAPIResource, MutableAPIResource):
                 assessment_id = self.id
 
         result = cls_or_self.mutate('unschedule_assessment', assessment_id=assessment_id)
-        return result == 'true'
+        result = (result == 'true')
 
+        if result:
+            self.refresh('schedule')
+
+        return result
 
     @property
     def runs(self):
