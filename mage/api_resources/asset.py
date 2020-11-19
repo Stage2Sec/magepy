@@ -4,14 +4,14 @@ from .. import schema
 class Asset( ListableAPIResource, MutableAPIResource ):
     """
     Attributes:
-        id (str): Unique asset ID
-        created_at (str): When the asset was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the asset was last updated (e.g., '2020-01-02T03:04:56.789Z')
-        asset_type (mage.schema.AssetType): Type of the asset (e.g., 'IP_ADDRESS')
         asset_identifier (str): Identifier of the asset (e.g., '192.168.1.1')
         asset_source (mage.schema.AssetSource): How this asset was created (customer defined vs discovered)
-        tags (list of str): One or more labels or identifiers using arbitrary values (e.g., 'app-prod', 'app-dev', etc.)
+        asset_type (mage.schema.AssetType): Type of the asset (e.g., 'IP_ADDRESS')
+        created_at (str): When the asset was created (e.g., '2020-01-02T03:04:56.789Z')
         criticality (int): An integer value that represents the potential impact that the loss or compromise of the asset would have. 1 is the default (lowest) criticality.  5 is the most impactful.
+        id (str): Unique asset ID
+        tags (list of str): One or more labels or identifiers using arbitrary values (e.g., 'app-prod', 'app-dev', etc.)
+        updated_at (str): When the asset was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
 
     _GET_FN    = 'get_asset'

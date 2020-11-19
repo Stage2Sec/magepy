@@ -3,12 +3,14 @@ from .. import schema
 
 class AssessmentAssetGroupConnection( MutableAPIResource ):
     """
+    Connection between an assessment an an asset group.
+
     Attributes:
-        id (str): Unique connection ID (e.g., '11111111-1111-1111-1111-111111111111')
-        created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
-        asset_group_id (str): ID of the associated asset group
         assessment_id (str): ID of the associated assessment
+        asset_group_id (str): ID of the associated asset group
+        created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
+        id (str): Unique connection ID (e.g., '11111111-1111-1111-1111-111111111111')
+        updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
 
     _UPDATE_FN = 'update_assessment_asset_group_connection'

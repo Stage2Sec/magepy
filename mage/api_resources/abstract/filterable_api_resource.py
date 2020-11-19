@@ -61,8 +61,8 @@ class FilterBase:
                         params['filter'][key]['between'] = params['filter'][key][mode]
         if 'select' in params:
             for key in list(params['select']):
-                if params['select'][key]:
-                    normalize_list_filters(cls, params['select'][key]._params)
+                if params['select'][key] is not None:
+                    cls.normalize_list_filters(params['select'][key]._params)
 
     @classmethod
     def normalize_search_filters(cls, params):
@@ -73,8 +73,8 @@ class FilterBase:
                         params['filter'][key]['range'] = params['filter'][key][mode]
         if 'select' in params:
             for key in list(params['select']):
-                if params['select'][key]:
-                    normalize_search_filters(cls, params['select'][key]._params)
+                if params['select'][key] is not None:
+                    cls.normalize_search_filters(params['select'][key]._params)
 
     def _filter(self, mode, **kwargs):
         f = self._params.get('filter', {})

@@ -4,17 +4,17 @@ from .. import schema
 class TTP( ListableAPIResource, MutableAPIResource ):
     """
     Attributes:
-        id (str): Unique TTP ID
-        created_at (str): When the TTP was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the TTP was last updated (e.g., '2020-01-02T03:04:56.789Z')
         assessment_run_id (str): ID of the associated assessment run
         asset_id (str): ID of the associated asset
-        executed_on (mage.schema.AWSDateTime): Time this TTP was executed
-        technique (str): Type of technique
-        url (str): Technique URL
+        created_at (str): When the TTP was created (e.g., '2020-01-02T03:04:56.789Z')
         evidence (str): Evidence supporting the technique
-        files (list of mage.schema.S3Object): Associated files
+        executed_on (mage.schema.AWSDateTime): Time this TTP was executed
         file_links (list of str): Associated files
+        files (list of mage.schema.S3Object): Associated files
+        id (str): Unique TTP ID
+        updated_at (str): When the TTP was last updated (e.g., '2020-01-02T03:04:56.789Z')
+        url (str): Technique URL
+        technique (str): Type of technique
     """
 
     _SEARCH_FN = 'search_ttps'
@@ -51,7 +51,7 @@ class TTP( ListableAPIResource, MutableAPIResource ):
 
 
     @classmethod
-    def create(cls, technique, assessment_run_id, asset_id, **params):
+    def create(cls, technique, assessment_run_id, asset_id, **kwargs):
         """
         Creates a TTP for an assessment run.
 
@@ -71,7 +71,7 @@ class TTP( ListableAPIResource, MutableAPIResource ):
             >>> mage.TTP.create('Port scan', '11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222')
             >>> mage.TTP.create('Port scan', '11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222', evidence="Scanned all the ports")
         """
-        retval = cls.mutate('create_ttp', input={'technique': technique, 'assessment_run_id': assessment_run_id, 'asset_id': asset_id, **params})
+        retval = cls.mutate('create_ttp', input={'technique': technique, 'assessment_run_id': assessment_run_id, 'asset_id': asset_id, **kwargs})
         if retval:
             retval = cls.init(retval)
         return retval

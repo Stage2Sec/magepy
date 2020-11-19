@@ -1,3 +1,4 @@
+from .abstract import Filter
 from .assessment import Assessment
 from .assessment_asset_connection import AssessmentAssetConnection
 from .assessment_asset_group_connection import AssessmentAssetGroupConnection
@@ -13,8 +14,7 @@ from .credential import Credential
 from .credential_connection import CredentialConnection
 from .cloud_credential import CloudCredential
 from .finding import Finding
-from .lead import Lead
-from .ttp import TTP
-from .score import Score
 from .invoice import Invoice
-from .abstract import Filter
+from .lead import Lead
+from .score import Score
+from .ttp import TTP

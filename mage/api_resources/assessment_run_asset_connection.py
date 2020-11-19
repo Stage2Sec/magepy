@@ -3,12 +3,13 @@ from .. import schema
 
 class AssessmentRunAssetConnection( MutableAPIResource ):
     """
+    Connection between an assessment run and an asset.
+
     Attributes:
-        id (str): Unique connection ID
-        created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
         asset_id (str): ID of the associated asset
-        assessment_id (str): ID of the associated assessment
+        created_at (str): When the connection was created (e.g., '2020-01-02T03:04:56.789Z')
+        id (str): Unique connection ID
+        updated_at (str): When the connection was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
 
     _UPDATE_FN = 'update_assessment_run_asset_connection'
@@ -20,13 +21,54 @@ class AssessmentRunAssetConnection( MutableAPIResource ):
     @property
     def assessment(self):
         """
-        The associated assessment.
+        Warning:
+            Not Implemented.  Use assessment_run instead.
+
+        Todo:
+            Rename assessment to assessment_run in the schema and remove this method.
+        """
+        raise NotImplementedError("Call 'assessment_run' instead of 'assessment'")
+
+
+    @property
+    def assessment_id(self):
+        """
+        Warning:
+            Not Implemented.  Use assessment_run_id instead.
+
+        Todo:
+            Rename assessment_id to assessment_run_id in the schema and remove this method.
+        """
+        raise NotImplementedError("Use 'assessment_run_id' instead of 'assessment_id'")
+
+
+    @property
+    def assessment_run(self):
+        """
+        The associated assessment run.
 
         Returns:
-            `Assessment <assessment.Assessment>`
+            `AssessmentRun <assessment_run.AssessmentRun>`
+
+        Todo:
+            Rename assessment to assessment_run in the schema then update this method by renaming assessment to assessment_run.
         """
-        from .assessment import Assessment
-        return self._nested_resource(Assessment, 'assessment')
+        from .assessment_run import AssessmentRun
+        return self._nested_resource(AssessmentRun, 'assessment')
+
+
+    @property
+    def assessment_run_id(self):
+        """
+        ID of the associated assessment run.
+
+        Returns:
+            str
+
+        Todo:
+            Rename assessment_id to assessment_run_id in the schema and remove this method.
+        """
+        return self.assessment_id
 
 
     @property

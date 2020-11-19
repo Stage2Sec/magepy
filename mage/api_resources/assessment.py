@@ -6,15 +6,15 @@ from .. import schema
 class Assessment(ListableAPIResource, MutableAPIResource):
     """
     Attributes:
-        id (str): Unique assessment ID
         created_at (str): When the assessment was created (e.g., '2020-01-02T03:04:56.789Z')
-        updated_at (str): When the assessment was last updated (e.g., '2020-01-02T03:04:56.789Z')
-        type (mage.schema.AssessmentType): The assessment's type
-        name (str): The assessment's name (e.g., 'My Assessment')
         externally_assess_cloud_assets (bool):
+        id (str): Unique assessment ID
+        name (str): The assessment's name (e.g., 'My Assessment')
         phishing_configuration (mage.schema.PhishingConfiguration):
-        report_recipients (list of :class:`mage.schema.AWSEmail`):
+        report_recipients (list of :class:`mage.schema.AWSEmail`): List of email addresses to send run reports to
         schedule (mage.schema.Schedule): When and how often this assessment will automatically be run
+        type (mage.schema.AssessmentType): The assessment's type
+        updated_at (str): When the assessment was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
 
     _GET_FN = 'get_assessment'
@@ -173,7 +173,12 @@ class Assessment(ListableAPIResource, MutableAPIResource):
                 assessment_id = self.id
 
         result =  cls_or_self.mutate('schedule_assessment', input={'assessment_id': assessment_id, 'time_expression': time_expression, 'frequency': frequency})
-        return result == 'true'
+        result = (result == 'true')
+
+        if result:
+            self.refresh('schedule')
+
+        return result
 
 
     @class_or_instance_method
@@ -208,8 +213,12 @@ class Assessment(ListableAPIResource, MutableAPIResource):
                 assessment_id = self.id
 
         result = cls_or_self.mutate('unschedule_assessment', assessment_id=assessment_id)
-        return result == 'true'
+        result = (result == 'true')
 
+        if result:
+            self.refresh('schedule')
+
+        return result
 
     @property
     def runs(self):

@@ -3,10 +3,12 @@ from .. import schema
 
 class AssetGroup( ListableAPIResource, MutableAPIResource ):
     """
+    A group of assets that can be connected to assessments.
+
     Attributes:
+        created_at (str): When the asset group was created (e.g., '2020-01-02T03:04:56.789Z')
         id (str): Unique asset group ID (e.g., '11111111-1111-1111-1111-111111111111')
         name (str): Name of the group
-        created_at (str): When the asset group was created (e.g., '2020-01-02T03:04:56.789Z')
         updated_at (str): When the asset group was last updated (e.g., '2020-01-02T03:04:56.789Z')
     """
 
@@ -106,7 +108,7 @@ class AssetGroup( ListableAPIResource, MutableAPIResource ):
         """
 
         from mage import client_id
-        retval = cls.mutate('create_asset_group', input={'assetGroupClientId': client_id, 'name': name, **params})
+        retval = cls.mutate('create_asset_group', input={'assetGroupClientId': client_id, 'name': name, **kwargs})
         if retval:
             retval = cls.init(retval)
         return retval
