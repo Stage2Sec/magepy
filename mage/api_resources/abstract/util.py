@@ -1,3 +1,4 @@
+from sgqlc.types import list_of
 
 def to_camel_case(snake_str):
     """
@@ -45,7 +46,7 @@ def update_subfields(field, key, value, query):
     hard_exclude = ['arn', 'execution_arn', 'write_key', 'secret_key', 'session_token', 'additional_data', 'stripe_subscription_id', 'stripe_latest_invoice_status', 'stripe_customer_id', 'stripe_customer', 'stripe_subscription_status']
 
     from ...schema import schema
-    all_fields = [schema.Schedule]
+    all_fields = [schema.Schedule, list_of(schema.AssessmentAssetConnection)]
 
 
     params = value.copy()

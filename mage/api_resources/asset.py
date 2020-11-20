@@ -19,6 +19,7 @@ class Asset( ListableAPIResource, MutableAPIResource ):
     _SEARCH_FN = 'search_assets'
     _UPDATE_FN = 'update_asset'
     _DELETE_FN = 'delete_asset'
+    _QUERIES   = ['by_identifier']
 
     __field_names__ = schema.Asset.__field_names__
 
@@ -178,3 +179,16 @@ class Asset( ListableAPIResource, MutableAPIResource ):
         """
         from .finding import Finding
         return Finding.eq(affected_asset_id=self.id)
+
+
+    @classmethod
+    def by_identifier(cls, asset_identifier = None, **params):
+        Filter.normalize_list_filters(params)
+
+        if asset_identifier:
+            params['asset_identifier'] = asset_identifier
+
+        if 'limit' in params:
+            return cls._retrieve_all('assets_by_identifier', **params)
+        else:
+            return cls._retrieve('assets_by_identifier', **params)
