@@ -53,3 +53,5 @@ Thumbs.db
 *.swp
 build
 *.egg-info
+.coverage
+htmlcov
