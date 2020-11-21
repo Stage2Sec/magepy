@@ -23,7 +23,7 @@ class ListObjectIterator:
         from ... import auto_page
 
         while True:
-            if not self._lo:
+            if self._lo is None:
                 raise StopIteration
 
             if self._index < len(self._lo):
@@ -98,7 +98,7 @@ class ListObject():
         """
         page = self
 
-        while page:
+        while page is not None:
             for item in page:
                 yield item
 
@@ -147,11 +147,12 @@ class ListableAPIResource(DataAPIResource, FilterableAPIResource, metaclass=List
 
         from mage import endpoint
         result = endpoint(op.__to_graphql__(auto_select_depth=1))
-        #logger.debug(result)
 
         if 'errors' in result:
             for e in result['errors']:
                 logger.error(e['message'])
+                if e['message'] == 'Token has expired':
+                    raise RuntimeError('Token expired.  Call mage.connect() again.')
         if 'data' in result and result['data']:
             data = getattr((op + result), fn)
             if getattr(schema.Query, fn).type == schema.AWSJSON:
