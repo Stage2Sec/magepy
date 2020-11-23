@@ -34,7 +34,7 @@ class FilterBase:
 
     def __getattr__(self, name):
         # Allow filters to only call specific methods
-        if name not in ['list', 'search']:
+        if name not in ['list', 'search', 'get']:
             if not hasattr(self._cls, '_QUERIES') or name not in self._cls._QUERIES:
                 raise AttributeError("%r object has no attribute %r" %
                                  (self.__class__.__name__, name))

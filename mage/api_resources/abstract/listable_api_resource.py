@@ -232,7 +232,7 @@ class ListableAPIResource(DataAPIResource, FilterableAPIResource, metaclass=List
             return cls._retrieve(fn, **params)
 
     @classmethod
-    def get(cls, id):
+    def get(cls, id, **kwargs):
         """
         Gets a single result from the server for those classes that support it.
 
@@ -251,7 +251,7 @@ class ListableAPIResource(DataAPIResource, FilterableAPIResource, metaclass=List
         fn = getattr(cls,'_GET_FN',None)
         if not fn:
             raise NotImplementedError("%s does not support 'get'" % cls.__name__)
-        result = cls._retrieve_all(fn, id=id)
+        result = cls._retrieve_all(fn, id=id, **kwargs)
         if result and len(result) > 0:
             return result[0]
         return None

@@ -3,6 +3,8 @@ import unittest
 
 # import your test modules
 import tests.assessment
+import tests.asset
+import tests.asset_group
 import tests.invoice
 import tests.score
 
@@ -12,6 +14,8 @@ suite  = unittest.TestSuite()
 
 # add tests to the test suite
 suite.addTests(loader.loadTestsFromModule(tests.assessment))
+suite.addTests(loader.loadTestsFromModule(tests.asset))
+suite.addTests(loader.loadTestsFromModule(tests.asset_group))
 suite.addTests(loader.loadTestsFromModule(tests.invoice))
 suite.addTests(loader.loadTestsFromModule(tests.score))
 

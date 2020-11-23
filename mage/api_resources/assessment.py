@@ -56,9 +56,12 @@ class Assessment(ListableAPIResource, MutableAPIResource):
             if item:
                 asset_id = item.id
             retval = self.mutate('create_assessment_asset_connection', input={'assessment_id': self.id, 'asset_id': asset_id})
+
             if retval:
                 retval = AssessmentAssetConnection.init(retval)
-            return retval
+                return retval
+            else:
+                return None
 
         if isinstance(item, AssetGroup) or asset_group_id:
             if item:
@@ -66,7 +69,9 @@ class Assessment(ListableAPIResource, MutableAPIResource):
             retval = self.mutate('create_assessment_asset_group_connection', input={'asset_group_id': asset_group_id, 'assessment_id': self.id})
             if retval:
                 retval = AssessmentAssetGroupConnection.init(retval)
-            return retval
+                return retval
+            else:
+                return None
 
         raise TypeError("%s not supported" % type(item))
 

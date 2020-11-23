@@ -149,9 +149,22 @@ class TestAssessment(unittest.TestCase):
         self.assertIsInstance(connection, mage.AssessmentAssetConnection)
         self.assertEqual(len(list(self.a.assets.auto_paging_iter())), 1)
 
+    def test_connect_asset_by_id(self):
+        self.used_asset = True
+        self.asset = mage.Asset.create('DOMAIN', self.TEST_ASSET)
+        connection = self.a.connect(asset_id=self.asset.id)
+        self.assertIsInstance(connection, mage.AssessmentAssetConnection)
+        self.assertEqual(len(list(self.a.assets.auto_paging_iter())), 1)
+
     def test_connect_asset_group(self):
         self.ag = mage.AssetGroup.create('UNITTESTGROUP')
         connection = self.a.connect(self.ag)
+        self.assertIsInstance(connection, mage.AssessmentAssetGroupConnection)
+        self.assertEqual(len(list(self.a.asset_groups.auto_paging_iter())), 1)
+
+    def test_connect_asset_group_by_id(self):
+        self.ag = mage.AssetGroup.create('UNITTESTGROUP')
+        connection = self.a.connect(asset_group_id=self.ag.id)
         self.assertIsInstance(connection, mage.AssessmentAssetGroupConnection)
         self.assertEqual(len(list(self.a.asset_groups.auto_paging_iter())), 1)
 

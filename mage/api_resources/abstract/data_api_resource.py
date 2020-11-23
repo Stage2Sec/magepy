@@ -81,10 +81,14 @@ class DataAPIResource(object):
         if name not in self.data:
             if select:
                 from .filterable_api_resource import Filter
-                query = self.eq(id=self.id).select(**{name: Filter().select(select)}).limit(1)
+                query = self.select(**{name: Filter().select(select)})
             else:
-                query = self.eq(id=self.id).select(name).limit(1)
-            q = query[0]
+                query = self.select(name)
+
+            if hasattr(self, '_GET_FN'):
+                q = query.get(self.id)
+            else:
+                q = query.eq(id=self.id).limit(1)[0]
             self.data[name] = q.data[name]
         return newcls.init(self.data[name])
 
@@ -97,15 +101,25 @@ class DataAPIResource(object):
 
         #BUG: this new query wipes out any sorting that may have been done previously (as an example)
         if select:
-            query = self.eq(id=self.id).select(**{name: Filter().select(select)}).limit(1)
+            query = self.select(**{name: Filter().select(select)})
         else:
-            query = self.eq(id=self.id).select(name).limit(1)
+            query = self.select(name)
+
+        if hasattr(self, '_GET_FN'):
+            query._params['id'] = self.id
+            fn = self._GET_FN
+        else:
+            query = query.eq(id=self.id)
+            fn = self._SEARCH_FN
 
         # if there is no data then get it
         if not hasattr(self.data, name):
-            setattr(self.data, name, getattr(query[0].data, name))
+            if hasattr(self, '_GET_FN'):
+                setattr(self.data, name, getattr(query.get().data, name))
+            else:
+                setattr(self.data, name, getattr(query[0].data, name))
 
-        return ListObject(cls=newcls, fn=self._SEARCH_FN, params=query._params, items=self.data[name].items, next_token=self.data[name].next_token, subresult=[name])
+        return ListObject(cls=newcls, fn=fn, params=query._params, items=self.data[name].items, next_token=self.data[name].next_token, subresult=[name])
 
 
     def refresh(self, field = None):
@@ -120,15 +134,24 @@ class DataAPIResource(object):
         """
 
         if not hasattr(self.data, 'id'):
+            # .. Todo: raise error
             return
 
-        a = self.eq(id=self.data.id)
+        a = self
         if field is None:
             if hasattr(self, '__field_names__'):
                 fields = [name for name in self.__field_names__ if name != 'client']
                 a = a.select(*fields)
-            a = a.limit(1)[0]
+            if hasattr(self, '_GET_FN'):
+                a = a.get(self.data.id)
+            else:
+                a = a.eq(id=self.data.id)
+                a = a.limit(1)[0]
+
             self.data = a.data
         else:
-            a = a.select(field).limit(1)[0]
+            if hasattr(self, '_GET_FN'):
+                a = a.select(field).get(self.data.id)
+            else:
+                a = a.select(field).limit(1)[0]
             self.data[field] = a.data[field]
