@@ -2,6 +2,7 @@ import json
 from .abstract import *
 from .. import logger
 from .. import schema
+from collections import defaultdict
 
 class Assessment(ListableAPIResource, MutableAPIResource):
     """
@@ -47,18 +48,20 @@ class Assessment(ListableAPIResource, MutableAPIResource):
             >>> asset.connect(assessment_run_id=ar.id)
         """
 
-        from .assessment import Assessment
         from .assessment_asset_connection import AssessmentAssetConnection
-        from .assessment_run import AssessmentRun
-        from .assessment_run_asset_connection import AssessmentRunAssetConnection
+        from .assessment_asset_group_connection import AssessmentAssetGroupConnection
+        from .asset import Asset
         from .asset_group import AssetGroup
         if isinstance(item, Asset) or asset_id:
             if item:
                 asset_id = item.id
             retval = self.mutate('create_assessment_asset_connection', input={'assessment_id': self.id, 'asset_id': asset_id})
+
             if retval:
                 retval = AssessmentAssetConnection.init(retval)
-            return retval
+                return retval
+            else:
+                return None
 
         if isinstance(item, AssetGroup) or asset_group_id:
             if item:
@@ -66,9 +69,11 @@ class Assessment(ListableAPIResource, MutableAPIResource):
             retval = self.mutate('create_assessment_asset_group_connection', input={'asset_group_id': asset_group_id, 'assessment_id': self.id})
             if retval:
                 retval = AssessmentAssetGroupConnection.init(retval)
-            return retval
+                return retval
+            else:
+                return None
 
-        raise RuntimeException("%s not supported" % type(item))
+        raise TypeError("%s not supported" % type(item))
 
 
     @classmethod
@@ -304,6 +309,7 @@ class Assessment(ListableAPIResource, MutableAPIResource):
         return AssetGroup.eq(assessment_id=self.id)
 
 
+    @property
     def cloud_credentials(self):
         """
         The list of cloud credentials associated with this assessment.
@@ -316,6 +322,7 @@ class Assessment(ListableAPIResource, MutableAPIResource):
         return self._nested_resource_list(CloudCredential, 'cloud_credentials')
 
 
+    @property
     def cloud_credentials_filter(self):
         """
         The list of cloud credentials associated with this assessment.
@@ -362,10 +369,10 @@ class Assessment(ListableAPIResource, MutableAPIResource):
 
         if isinstance(obj, dict):
             data = obj
-        elif hasattr(file_name_or_object, 'read'):
-            data = json.loads(f.read())
+        elif hasattr(obj, 'read'):
+            data = json.loads(obj.read())
         else:
-            with open(file_name_or_object, 'r') as f:
+            with open(obj, 'r') as f:
                 data = json.loads(f.read())
 
         from .cloud_credential import CloudCredential
@@ -373,31 +380,44 @@ class Assessment(ListableAPIResource, MutableAPIResource):
         logger.info('[*] Processing input data')
         type_map = {'cidrs': 'CIDR', 'ips': 'IP_ADDRESS', 'domains': 'DOMAIN', 'emails': 'EMAIL'}
         types = {'cidrs':[], 'ips':[], 'domains':[], 'cloud_credentials':[], 'emails':[]}
+
+        for t in data:
+            if t not in types:
+                raise KeyError('Unsupported type %s' % t)
+
         for t in types:
             types[t] = data.get(t, [])
             if isinstance(types[t], str):
                 types[t] = [types[t]]
             if not isinstance(types[t], list):
-                raise ValueError('Unsupported type %s for %s' % (type(types[t]), t))
+                raise TypeError('Unsupported type %s for %s' % (type(types[t]), t))
 
             logger.info('[*] %i %s' % (len(types[t]), t))
+
+        old_assetlist = defaultdict(list)
+        for connection in self.assets.auto_paging_iter():
+            old_assetlist[connection.asset.asset_type].append(connection.asset.asset_identifier)
 
         for t in types:
             logger.info('\n[*] Processing %s' % t)
             if t == 'cloud_credentials':
                 for credential in types[t]:
                     logger.info('[*] Adding cloud credential')
-                    CloudCredential.create(self.id, credential)
+                    CloudCredential.create(self.id, **credential)
             else:
-                # If an asset already exists, add it to the assessment
-                # If an asset does not exist, create it and add it to the assessment
-                for asset in types[t]:
-                    a = Asset.eq(asset_identifier=asset).first()[0]
-                    if a:
+                for identifier in types[t]:
+                    # If the asset does not exist, create it
+                    assetlist = Asset.eq(asset_type=type_map[t], asset_source='CUSTOMER_DEFINED').limit(1).by_identifier(identifier)
+                    if len(assetlist) > 0:
+                        a = assetlist[0]
                         logger.info('[!] Existing asset found, connecting asset ID %s to the assessment' % (a.id))
-                    if not a:
-                        logger.info('[+] Creating asset (%s) and connecting to assessment' % (asset))
-                        a = Asset.create(type_map[t], asset)
-                    a.connect(self)
+                    else:
+                        logger.info('[+] Creating asset (%s) and connecting to assessment' % (identifier))
+                        a = Asset.create(type_map[t], identifier)
+
+                    # Add it to the assessment
+                    if a.asset_identifier not in old_assetlist[a.asset_type]:
+                        old_assetlist[a.asset_type].append(a.asset_identifier)
+                        self.connect(a)
 
         self.refresh()

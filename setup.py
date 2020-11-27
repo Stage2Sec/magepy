@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="magepy",
-    version="0.2.1",
+    version="0.2.2",
     author="Stage 2 Security",
     author_email="magepy@stage2sec.com",
     description="An SDK to interact with MAGE",

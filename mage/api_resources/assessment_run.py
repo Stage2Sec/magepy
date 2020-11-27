@@ -111,7 +111,7 @@ class AssessmentRun(ListableAPIResource, MutableAPIResource, FilterableAPIResour
                 self = cls_or_self
                 assessment_run_id = self.id
 
-        if not emails:
+        if emails is None:
             if not isinstance(cls_or_self, type):
                 self = cls_or_self
                 emails = self.assessment.report_recipients

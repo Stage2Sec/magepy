@@ -43,7 +43,7 @@ class AssetGroup( ListableAPIResource, MutableAPIResource ):
             `ListObject` of `AssetGroupConnection <asset_group_connection.AssetGroupConnection>`
         """
         from .asset_group_connection import AssetGroupConnection
-        return self._nested_resource_list(AssessmentAssetGroupConnection, 'assets', AssessmentAssetGroupConnection.__field_names__)
+        return self._nested_resource_list(AssetGroupConnection, 'assets', AssetGroupConnection.__field_names__)
 
 
     def connect(self, item = None, assessment_id = None, asset_id = None):
@@ -86,7 +86,7 @@ class AssetGroup( ListableAPIResource, MutableAPIResource ):
                 retval = AssetGroupConnection.init(retval)
             return retval
 
-        raise RuntimeError("%s not supported" % type(item))
+        raise TypeError("%s not supported" % type(item))
 
 
     @classmethod

@@ -33,17 +33,19 @@ class FilterBase:
         return 'BaseFilter(%s)' % (self._params)
 
     def __getattr__(self, name):
-        if name not in ['list', 'search']:
-            raise AttributeError("%r object has no attribute %r" %
-                             (self.__class__.__name__, name))
+        # Allow filters to only call specific methods
+        if name not in ['list', 'search', 'get']:
+            if not hasattr(self._cls, '_QUERIES') or name not in self._cls._QUERIES:
+                raise AttributeError("%r object has no attribute %r" %
+                                 (self.__class__.__name__, name))
 
         attr =  getattr(self._cls, name)
         _params = self._params
         if callable(attr):
-            def hook(**params):
+            def hook(*args, **kwargs):
                 nonlocal attr
                 nonlocal _params
-                return attr(**_params, **params)
+                return attr(*args, **_params, **kwargs)
             return hook
         return attr
 

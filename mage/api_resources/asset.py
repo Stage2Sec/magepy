@@ -19,6 +19,7 @@ class Asset( ListableAPIResource, MutableAPIResource ):
     _SEARCH_FN = 'search_assets'
     _UPDATE_FN = 'update_asset'
     _DELETE_FN = 'delete_asset'
+    _QUERIES   = ['by_identifier']
 
     __field_names__ = schema.Asset.__field_names__
 
@@ -47,32 +48,27 @@ class Asset( ListableAPIResource, MutableAPIResource ):
         return self._nested_resource_list(AssetGroupConnection, 'asset_groups', AssetGroupConnection.__field_names__)
 
 
-    def connect(self, item = None, assessment_id = None, assessment_run_id = None, asset_group_id = None):
+    def connect(self, item = None, assessment_id = None, asset_group_id = None):
         """
-        Connect an asset to an assessment, assessment run, or asset group
+        Connect an asset to an assessment or asset group
 
         Args:
             item (object, optional): Assessment or AssessmentRun or AssetGroup to connect the asset to
             assessment_id (str, optional): ID of the assessment to connect the asset to
-            assessment_run_id (str, optional): ID of the assessment run to connect the asset to
             asset_group_id (str, optional): ID of the asset group to connect the asset to
 
         Returns:
-            `AssessmentAssetConnection <assessment_asset_connection.AssessmentAssetConnection>` or `AssetGroupConnection <asset_group_connection.AssetGroupConnection>` or `AssessmentRunAssetConnection <assessment_run_asset_connection.AssessmentRunAssetConnection>` 
+            `AssessmentAssetConnection <assessment_asset_connection.AssessmentAssetConnection>` or `AssetGroupConnection <asset_group_connection.AssetGroupConnection>`
 
         Example:
             >>> import mage
             >>> mage.connect()
             >>> asset = mage.Asset.eq(asset_identifier='www.example.com')[0]
             >>> asset.connect(mage.Assessment.last()[0])
-            >>> ar = mage.AssessmentRun.last()[0]
-            >>> asset.connect(assessment_run_id=ar.id)
         """
 
         from .assessment import Assessment
         from .assessment_asset_connection import AssessmentAssetConnection
-        from .assessment_run import AssessmentRun
-        from .assessment_run_asset_connection import AssessmentRunAssetConnection
         from .asset_group import AssetGroup
         from .asset_group_connection import AssetGroupConnection
         if isinstance(item, Assessment) or assessment_id:
@@ -81,25 +77,22 @@ class Asset( ListableAPIResource, MutableAPIResource ):
             retval = self.mutate('create_assessment_asset_connection', input={'asset_id': self.id, 'assessment_id': assessment_id})
             if retval:
                 retval = AssessmentAssetConnection.init(retval)
-            return retval
-
-        if isinstance(item, AssessmentRun) or assessment_run_id:
-            if item:
-                assessment_run_id = item.id
-            retval = self.mutate('create_assessment_run_asset_connection', input={'asset_id': self.id, 'assessment_run_id': assessment_run_id})
-            if retval:
-                retval = AssessmentRunAssetConnection.init(retval)
-            return retval
+                return retval
+            else:
+                return None
 
         if isinstance(item, AssetGroup) or asset_group_id:
             if item:
                 asset_group_id = item.id
             retval = self.mutate('create_asset_group_connection', input={'group_id': asset_group_id, 'asset_id': self.id})
+
             if retval:
                 retval = AssetGroupConnection.init(retval)
-            return retval
+                return retval
+            else:
+                return None
 
-        raise RuntimeException("%s not supported" % type(item))
+        raise TypeError("%s not supported" % type(item))
 
 
     @property
@@ -151,6 +144,7 @@ class Asset( ListableAPIResource, MutableAPIResource ):
         from .credential_connection import CredentialConnection
         return self._nested_resource_list(CredentialConnection, 'credentials', CredentialConnection.__field_names__)
 
+
     @property
     def findings(self):
         """
@@ -160,9 +154,10 @@ class Asset( ListableAPIResource, MutableAPIResource ):
             `ListObject` of `Finding <finding.Finding>`
         """
         from .finding import Finding
-        return self._nested_resource_list(Finding, 'findings', Finding.__field_names__)
+        return self._nested_resource_list(Finding, 'findings')
 
 
+    @property
     def findings_filter(self):
         """
         Findings associated with this asset.
@@ -178,3 +173,16 @@ class Asset( ListableAPIResource, MutableAPIResource ):
         """
         from .finding import Finding
         return Finding.eq(affected_asset_id=self.id)
+
+
+    @classmethod
+    def by_identifier(cls, asset_identifier = None, **params):
+        Filter.normalize_list_filters(params)
+
+        if asset_identifier:
+            params['asset_identifier'] = asset_identifier
+
+        if 'limit' in params:
+            return cls._retrieve_all('assets_by_identifier', **params)
+        else:
+            return cls._retrieve('assets_by_identifier', **params)
