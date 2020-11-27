@@ -11,7 +11,7 @@ pypi: dist
 	python3 -m twine upload --repository pypi dist/*
 
 coverage:
-	coverage run --source . test_runner.py
+	coverage run --source . test_runner.py $(TEST)
 	coverage html
 
 test:
