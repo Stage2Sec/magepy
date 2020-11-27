@@ -57,7 +57,7 @@ class TestAssetGroup(unittest.TestCase):
         self.assertIsInstance(connection, mage.AssetGroupConnection)
         self.assertEqual(len(list(self.ag.assets.auto_paging_iter())), 1)
 
-    def test_connect_bad_val(self):
+    def test_connect_bad_type(self):
         self.assertRaises(TypeError, self.ag.connect, self.ag)
 
     def test_create(self):

@@ -168,7 +168,7 @@ class TestAssessment(unittest.TestCase):
         self.assertIsInstance(connection, mage.AssessmentAssetGroupConnection)
         self.assertEqual(len(list(self.a.asset_groups.auto_paging_iter())), 1)
 
-    def test_connect_bad_val(self):
+    def test_connect_bad_type(self):
         self.assertRaises(TypeError, self.a.connect, self.a)
 
 if __name__ == '__main__':
